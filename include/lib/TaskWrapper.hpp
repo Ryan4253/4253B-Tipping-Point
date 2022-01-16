@@ -7,31 +7,31 @@
  * from the constructor or from outside the class.
  */
 
-class LazyTask {
+class TaskWrapper {
     protected:
     /**
      * @brief Construct a new Task Wrapper object
      * 
      */
-    LazyTask() = default;
+    TaskWrapper() = default;
 
     /**
      * @brief Copying between tasks is not allowed
      */
-    LazyTask(const LazyTask& iTask) = delete;
+    TaskWrapper(const TaskWrapper& iTask) = delete;
 
     /**
      * @brief Construct a new Task Wrapper object
      * 
      * @param iTask rvalue of a task
      */
-    LazyTask(LazyTask&& iTask) = default;
+    TaskWrapper(TaskWrapper&& iTask) = default;
 
     /**
      * @brief Destroy the Task Wrapper object, virtual to allow inheritance
      * 
      */
-    virtual ~LazyTask();
+    virtual ~TaskWrapper();
 
     /**
      * @brief the task loop to run

@@ -6,7 +6,7 @@
  *        in autonomous
  * 
  */
-class Conveyor : public LazyTask {
+class Conveyor : public TaskWrapper {
     private: 
     std::shared_ptr<Motor> motor;
 

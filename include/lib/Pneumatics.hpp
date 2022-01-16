@@ -2,27 +2,27 @@
 #include "main.h"
 
 /**
- * @brief Wrapper class for vex pneumatics which allows more convenient control
+ * @brief Wrapper class for vex Pneumatics which allows more convenient control
  * 
  */
-class LazyPneumatics {
+class Pneumatics {
     pros::ADIDigitalOut piston;
     bool state;
 
     public:
     /**
-     * @brief Construct a new LazyPneumatics object
+     * @brief Construct a new Pneumatics object
      * 
      * @param iPort solinoid port
      * @param initState initial state of the piston
      */
-    LazyPneumatics(char iPort, bool initState = false);
+    Pneumatics(char iPort, bool initState = false);
 
     /**
-     * @brief Destroys the LazyPneumatics object
+     * @brief Destroys the Pneumatics object
      * 
      */
-    ~LazyPneumatics() = default;
+    ~Pneumatics() = default;
 
     /**
      * @brief Toggles the solinoid to the value opposite to the current state
