@@ -77,6 +77,7 @@ void opcontrol(void);
  * You can add C++-only headers here
  */
 #include <iostream>
+#include <fstream>
 #include <cmath> 
 #include <algorithm>
 #include <map>

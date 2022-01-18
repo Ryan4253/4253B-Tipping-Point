@@ -1,24 +1,5 @@
 #include "main.h"
 
-/**
- * @brief Create a Blank Background on the brain screen
- * 
- */
-void createBlankBackground(){
-    lv_obj_t *background;
-    lv_style_t backgroundStyle;
-    lv_style_copy(&backgroundStyle, &lv_style_plain);
-    backgroundStyle.body.main_color = LV_COLOR_BLACK;
-    backgroundStyle.body.grad_color = LV_COLOR_BLACK;
-    backgroundStyle.body.radius = 0;
-    backgroundStyle.text.color = LV_COLOR_WHITE;
-    background = lv_obj_create(lv_scr_act(), NULL);
-    lv_obj_set_free_num(background, 0);
-    lv_obj_set_style(background, &backgroundStyle);
-    lv_obj_set_size(background, LVGL_SCREEN_WIDTH, LVGL_SCREEN_HEIGHT);
-    lv_obj_align(background, NULL, LV_ALIGN_CENTER, 0, 0);
-}
-
 void initialize(){
     // Screen initialization
 	pros::lcd::initialize();
@@ -42,43 +23,39 @@ void initialize(){
 
 void disabled(){}
 
-void competition_initialize(){
-    // Simple autonomous selector implemented using lambda functions
-    pros::lcd::register_btn0_cb([](){lift.tarePosition();});
-    pros::lcd::register_btn1_cb([](){Auton::switchAuton();});
-    pros::lcd::register_btn2_cb([](){Auton::select();});
-    
-    while(true){
-        std::string message = "Selected Autonomous: " + Auton::getName();
-        pros::lcd::print(0, message.c_str());
-        pros::delay(10);
-    }
-}
+void competition_initialize(){}
 
 void autonomous(){
     Auton::execute();
 }
 
 void opcontrol(){
+    Auton::init();
+    Auton::skills();
+    while(true){
+        pros::delay(10);
+    }
+
     // Starts logo gif
     createBlankBackground();
     Gif gif("/usd/gif/logo.gif", lv_scr_act());
 
     // Initializes variable
     int liftPos = 0;
-    bool clampState = false, prevClampState = false;
-    bool mogoState = false, prevMogoState = false;
+
+    // Disable Lift Task
+    //liftController->flipDisable();
 
     // Sets motor brake mode
     leftDrive.setBrakeMode(AbstractMotor::brakeMode::coast);
     rightDrive.setBrakeMode(AbstractMotor::brakeMode::coast);
     lift.setBrakeMode(AbstractMotor::brakeMode::hold);
-    
+
     while(true){
         /**
          * @brief chassis control using our custom curvature mode
          *        Left analog stick: throttle
-         *        right analog stick: throttle
+         *        right analog stick: curvature
          */
         double power = Math::deadband(master.getAnalog(ControllerAnalog::leftY), DEADBAND);
         double curvature = Math::deadband(master.getAnalog(ControllerAnalog::rightX), DEADBAND);
@@ -89,18 +66,16 @@ void opcontrol(){
          *        L1 pressed: increments target angle by LIFT_STEP
          *        L2 pressed: decrements target angle by LIFT_STEP
          *        note: target angle is capped to [0, MAX_LIFT_HEIGHT] to protect the lift
-         * 
          */
         liftPos += LIFT_STEP * master.getDigital(ControllerDigital::L1); 
         liftPos -= LIFT_STEP * master.getDigital(ControllerDigital::L2);
-        liftController->setTarget(liftPos = Math::clamp(liftPos, MAX_LIFT_HEIGHT, 0));
+        liftController->setTarget(liftPos = Math::clamp(liftPos, 0, MAX_LIFT_HEIGHT));
 
         /**
          * @brief controlls our roller
          *        When both L1 and L2 pressed: runs the roller inward (intakes)
          *        When A is pressed: runs the roller outward (outtakes)
          *        When Both are pressed / unpressed: no movement
-         * 
          */
         roller.moveVoltage(12000*((master.getDigital(ControllerDigital::L1) && master.getDigital(ControllerDigital::L2))-master.getDigital(ControllerDigital::A)));
 
@@ -110,7 +85,6 @@ void opcontrol(){
          *        When R2 is unpressed: claw solenoid is set to false
          */
         claw.set(master.getDigital(ControllerDigital::R1));
-
 
         /**
          * @brief controls the wing depending on the button value 
@@ -123,21 +97,31 @@ void opcontrol(){
          * @brief controls the mogo holder pistons using rising edge detection (上升緣觸發)
          *        When X is pressed: toggles the state of the mogo solenoid
          */
-        mogoState = master.getDigital(ControllerDigital::X);
-        if(!prevMogoState && mogoState){
+        if(master[ControllerDigital::X].changedToPressed()){
             mogo.toggle();
         }
-        prevMogoState = mogoState;
 
         /**
          * @brief controls the mogo clamp pistons using rising edge detection (上升緣觸發)
-         *        When X is pressed: toggles the state of the mogo clamp
+         *        When R2 is pressed: toggles the state of the mogo clamp
          */
-        clampState = master.getDigital(ControllerDigital::R2);
-        if(!prevClampState && clampState){
+        if(master[ControllerDigital::R2].changedToPressed()){
             mogoClamp.toggle();
         }
-        prevClampState = clampState;
+
+        /**
+         * @brief switches the desired autnomous if right is pressed
+         */
+        if(master[ControllerDigital::right].changedToPressed()){
+            Auton::switchAuton();
+        }
+
+        /**
+         * @brief writes the desired autonomous to the SD Card if left is pressed
+         */
+        if(master[ControllerDigital::left].changedToPressed()){
+            Auton::select();
+        }
 
         pros::delay(10);
     }

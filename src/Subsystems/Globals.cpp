@@ -65,3 +65,21 @@ std::shared_ptr<IterativePosPIDController> visionPID = std::make_shared<Iterativ
 std::shared_ptr<IterativePosPIDController> movePID = std::make_shared<IterativePosPIDController>(0.1, 0.0, 0.002, 0, TimeUtilFactory::withSettledUtilParams(2, 2, 100_ms));
 std::shared_ptr<IterativePosPIDController> headingPID = std::make_shared<IterativePosPIDController>(0.118, 0, 0, 0, TimeUtilFactory::createDefault());
 
+/**
+ * @brief Create a Blank Background on the brain screen
+ * 
+ */
+void createBlankBackground(){
+    lv_obj_t *background;
+    lv_style_t backgroundStyle;
+    lv_style_copy(&backgroundStyle, &lv_style_plain);
+    backgroundStyle.body.main_color = LV_COLOR_BLACK;
+    backgroundStyle.body.grad_color = LV_COLOR_BLACK;
+    backgroundStyle.body.radius = 0;
+    backgroundStyle.text.color = LV_COLOR_WHITE;
+    background = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_free_num(background, 0);
+    lv_obj_set_style(background, &backgroundStyle);
+    lv_obj_set_size(background, LVGL_SCREEN_WIDTH, LVGL_SCREEN_HEIGHT);
+    lv_obj_align(background, NULL, LV_ALIGN_CENTER, 0, 0);
+}

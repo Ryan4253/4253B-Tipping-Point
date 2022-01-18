@@ -1,15 +1,17 @@
 #pragma once
 #include "main.h"
 
+using AutonFunction = std::function<void()>;
+
 /**
  * @brief This namespaces contains our auton selector implemented
  *        using pros' LLEMU buttons, as well as all our auton routes
  * 
  */
 namespace Auton {
-    extern pros::Mutex lock;
-    extern std::vector<std::function<void()>> auton;
-    extern std::vector<std::string> name;
+    extern std::map<std::string, AutonFunction> auton;
+    extern std::map<int, std::string> name;
+    extern std::string currentName;
     extern int index;
 
     /**
@@ -27,7 +29,7 @@ namespace Auton {
     void switchAuton();
 
     /**
-     * @brief locks the routine to the current autonomous
+     * @brief sets the routine to the current autonomous
      * 
      */
     void select();
@@ -39,11 +41,18 @@ namespace Auton {
     void execute();
 
     /**
+     * @brief Get the name of the currently candidate autonomous
+     * 
+     * @return std::string the name of the autonomous that will be set of select() is called
+     */
+    std::string getCandidateName();
+
+    /**
      * @brief Get the name of the currently selected autonomous
      * 
-     * @return std::string 
+     * @return std::string the name of the autonomous that will be run if execute() is called
      */
-    std::string getName();
+    std::string getSelectedName();
 
     /**
      * @brief initializes robot for autonomous

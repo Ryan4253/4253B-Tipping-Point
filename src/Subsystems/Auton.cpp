@@ -1,40 +1,60 @@
 #include "main.h"
 
-pros::Mutex Auton::lock;
-std::vector<std::function<void()>> Auton::auton;
-std::vector<std::string> Auton::name;
+std::map<std::string, AutonFunction> Auton::auton;
+std::map<int, std::string> Auton::name;
+std::string Auton::currentName = "";
 int Auton::index = 0;
 
 
-void Auton::add(std::function<void()> iAutonomous, std::string iName){
-    auton.push_back(iAutonomous);
-    name.push_back(iName);
+void Auton::add(AutonFunction iAutonomous, std::string iName){
+    auton.insert(make_pair(iName, iAutonomous));
+    name.insert(make_pair(auton.size(), iName));
 }
 
 void Auton::switchAuton(){
-    lock.take(5);
+    if(auton.size() == 0){
+        return;
+    }
     index++;
     index %= auton.size();
-    lock.give();
 }
 
 void Auton::select(){
-    pros::lcd::register_btn0_cb([](){});
-    pros::lcd::register_btn1_cb([](){});
-    pros::lcd::register_btn2_cb([](){});
+    if(auton.size() == 0){
+        return;
+    }
+    std::ofstream file("/usd/auton.txt", std::ios::out);
+    
+    file << getCandidateName();
 }
 
-std::string Auton::getName(){
-    lock.take(5);
-    std::string ret = name[index];
-    lock.give();
-    return ret;
+std::string Auton::getCandidateName(){
+    if(auton.size() == 0){
+        return "";
+    }
+    auto ret = name.find(index);
+    return ret->second;
+}
+
+std::string Auton::getSelectedName(){
+    return currentName;
 }
 
 void Auton::execute(){
-    lock.take(5);
-    auton[index];
-    lock.give();
+    std::ifstream file("/usd/auton.txt", std::ios::in);
+    if(file.peek() == std::ifstream::traits_type::eof()){
+        return;
+    }
+
+    std::string autonName; file >> autonName;
+
+    auto it = auton.find(autonName);
+
+    if(it == auton.end()){
+        return;
+    }
+
+    it->second();
 }
 
 void Auton::init() {
@@ -155,6 +175,17 @@ void Auton::skills(){
     liftController->setTarget(710);
     profiler->waitUntilSettled();
 
+    turnToAngle(90_deg);
+    claw.set(false);
+    liftController->setTarget(MAX_LIFT_HEIGHT);
+    pros::delay(1000);
+    profiler->setTarget(-8_in);
+    profiler->waitUntilSettled();
+
+    liftController->setTarget(0);
+    turnToAngle(180_deg);
+
+    /*  
     moveTime({-0.5, 0.5}, 500_ms);
     turnToAngle(90_deg);
     claw.set(false); pros::delay(500);
@@ -245,6 +276,7 @@ void Auton::skills(){
     pros::delay(250);
     liftController->setTarget(710);
     profiler->waitUntilSettled();
+    */
 }
 
 

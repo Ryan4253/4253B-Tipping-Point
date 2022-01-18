@@ -18,18 +18,6 @@ template class StateMachine<MotionProfileState>;
  */
 class AsyncMotionProfiler : public StateMachine<MotionProfileState, MotionProfileState::IDLE>, public TaskWrapper {
     protected:
-    /**
-     * @brief Construct a new Async Motion Profiler object. The constructor is protected to ensure 
-     *        that it can only be constructed by its friend: the profiler builder class.
-     * 
-     * @param iChassis the chassis object to output the power to
-     * @param iMove the motion profile generator for linear movements
-     * @param iLeftLinear the left motor controller for linaer movements
-     * @param iRightLinear the right motor controller for linear movements
-     * @param iLeftTrajectory the left motor controller for following trajectories
-     * @param iRightTrajectory the left motor controller for following trajectories
-     * @param iTimeUtil timer for the profiler
-     */
     AsyncMotionProfiler(std::shared_ptr<ChassisController> iChassis, 
                         std::unique_ptr<LinearMotionProfile> iMove, 
                         std::unique_ptr<FFVelocityController> iLeftLinear, 
@@ -38,17 +26,23 @@ class AsyncMotionProfiler : public StateMachine<MotionProfileState, MotionProfil
                         std::unique_ptr<FFVelocityController> iRightTrajectory,
                         const TimeUtil& iTimeUtil);
 
-    /**
-     * @brief copying is not allowed
-     */
     void operator=(const AsyncMotionProfiler& rhs) = delete;
 
-    /**
-     * @brief forward declared as friend to allow AsyncMotionProfilerBuilder to access the constructor
-     * 
-     */
     friend class AsyncMotionProfilerBuilder;
 
+    public:
+
+    void setTarget(QLength iDistance);
+
+    void setTarget(const Trajectory& iPath);
+
+    void stop();
+
+    void loop() override;
+
+    void waitUntilSettled();
+
+    protected:
     std::shared_ptr<ChassisController> chassis;
     std::shared_ptr<AbstractMotor> leftMotor;
     std::shared_ptr<AbstractMotor> rightMotor;
@@ -66,39 +60,6 @@ class AsyncMotionProfiler : public StateMachine<MotionProfileState, MotionProfil
 
     Trajectory path;
     pros::Mutex lock;
-
-    public:
-    /**
-     * @brief Sets the target distance 
-     * 
-     * @param iDistance distance to travel
-     */
-    void setTarget(QLength iDistance);
-
-    /**
-     * @brief Sets the trajectory for the robot to follow
-     * 
-     * @param iPath the trajectory to follow
-     */
-    void setTarget(const Trajectory& iPath);
-
-    /**
-     * @brief stops all chassis movement
-     * 
-     */
-    void stop();
-
-    /**
-     * @brief Task loop which allows the chassis to be controlled asynchronously
-     * 
-     */
-    void loop() override;
-
-    /**
-     * @brief Blocks the current movement until chassis is settled
-     * 
-     */
-    void waitUntilSettled();
 };
 
 
