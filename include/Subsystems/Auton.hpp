@@ -5,7 +5,7 @@ using AutonFunction = std::function<void()>;
 
 /**
  * @brief This namespaces contains our auton selector implemented
- *        using pros' LLEMU buttons, as well as all our auton routes
+ *        using the V5 controller, as well as all our auton routes
  * 
  */
 namespace Auton {

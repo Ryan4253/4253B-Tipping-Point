@@ -159,33 +159,83 @@ void Auton::awp(){
 }
 
 void Auton::skills(){
-    
+    // Get 1st Mogo
     liftController->setTarget(100);
-    
     mogoClamp.set(true); pros::delay(250); mogo.set(true);
     roller.moveVoltage(12000);
-
     profiler->setTarget(Skills::path0);
     pros::delay(1000);
     liftController->setTarget(0);
     profiler->waitUntilSettled();
     claw.set(true);
     
+    // Drive to platform, score mogo
     profiler->setTarget(Skills::path1);
     liftController->setTarget(710);
     profiler->waitUntilSettled();
-
     turnToAngle(90_deg);
     claw.set(false);
     liftController->setTarget(MAX_LIFT_HEIGHT);
-    pros::delay(1000);
+    pros::delay(500);
+
+    // Go back, switch mogo to the other side
+    /*
     profiler->setTarget(-8_in);
     profiler->waitUntilSettled();
-
     liftController->setTarget(0);
     turnToAngle(180_deg);
+    profiler->setTarget(2_ft);
+    pros::delay(500);
+    mogoClamp.toggle();
+    profiler->waitUntilSettled();
+    turnToAngle(0_deg);
+    profiler->setTarget(11_in);
+    profiler->waitUntilSettled();
+    claw.toggle();
+    */
+    // Score alliance mogo
+    /*
+    liftController->setTarget(MAX_LIFT_HEIGHT);
+    pros::delay(1000);
+    turnToAngle(90_deg);
+    claw.toggle();
+    profiler->setTarget(6_in);
+    profiler->waitUntilSettled();
+    */
+    // Drive back, drive to side alliance mogo
+    profiler->setTarget(-8_in); // initially -6
+    profiler->waitUntilSettled();
+    turnToAngle(0_deg);
+    liftController->setTarget(0);
+    profiler->setTarget(2_tile);
+    pros::delay(300);
+    mogoClamp.set(false);
+    profiler->waitUntilSettled();
+    pros::delay(500);
+    claw.toggle();
 
-    /*  
+    // Drive to center mogo, push to end
+    liftController->setTarget(100);
+    profiler->setTarget(-0.7_tile);
+    profiler->waitUntilSettled();
+    turnToAngle(45_deg);
+    mogo.toggle();
+    profiler->setTarget(-1.8_tile);
+    profiler->waitUntilSettled();
+    profiler->setTarget(-6.5_ft);
+    profiler->waitUntilSettled();
+
+    liftController->setTarget(MAX_LIFT_HEIGHT);
+    profiler->setTarget(Skills::path4);
+    profiler->waitUntilSettled();
+    claw.toggle();
+
+    profiler->setTarget(-5.75_in);
+    profiler->waitUntilSettled();
+    turnToAngle(0_deg);
+    profiler->setTarget(-4_ft);
+
+    /*
     moveTime({-0.5, 0.5}, 500_ms);
     turnToAngle(90_deg);
     claw.set(false); pros::delay(500);
