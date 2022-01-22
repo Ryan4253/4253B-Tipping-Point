@@ -158,6 +158,8 @@ void Auton::awp(){
     profiler->waitUntilSettled();
 }
 
+
+
 void Auton::skills(){
     // Get 1st Mogo
     liftController->setTarget(100);
@@ -178,45 +180,21 @@ void Auton::skills(){
     liftController->setTarget(MAX_LIFT_HEIGHT);
     pros::delay(500);
 
-    // Go back, switch mogo to the other side
-    /*
-    profiler->setTarget(-8_in);
-    profiler->waitUntilSettled();
-    liftController->setTarget(0);
-    turnToAngle(180_deg);
-    profiler->setTarget(2_ft);
-    pros::delay(500);
-    mogoClamp.toggle();
-    profiler->waitUntilSettled();
-    turnToAngle(0_deg);
-    profiler->setTarget(11_in);
-    profiler->waitUntilSettled();
-    claw.toggle();
-    */
-    // Score alliance mogo
-    /*
-    liftController->setTarget(MAX_LIFT_HEIGHT);
-    pros::delay(1000);
-    turnToAngle(90_deg);
-    claw.toggle();
-    profiler->setTarget(6_in);
-    profiler->waitUntilSettled();
-    */
     // Drive back, drive to side alliance mogo
     profiler->setTarget(-8_in); // initially -6
     profiler->waitUntilSettled();
     turnToAngle(0_deg);
     liftController->setTarget(0);
-    profiler->setTarget(2_tile);
-    pros::delay(300);
+    profiler->setTarget((2_tile)+(2_in));
+    pros::delay(550);
     mogoClamp.set(false);
     profiler->waitUntilSettled();
-    pros::delay(500);
+    pros::delay(100);
     claw.toggle();
 
     // Drive to center mogo, push to end
     liftController->setTarget(100);
-    profiler->setTarget(-0.7_tile);
+    profiler->setTarget((-0.7_tile)+(2_in));
     profiler->waitUntilSettled();
     turnToAngle(45_deg);
     mogo.toggle();
@@ -225,108 +203,66 @@ void Auton::skills(){
     profiler->setTarget(-6.5_ft);
     profiler->waitUntilSettled();
 
+    // score red side mogo
     liftController->setTarget(MAX_LIFT_HEIGHT);
     profiler->setTarget(Skills::path4);
     profiler->waitUntilSettled();
-    claw.toggle();
-
+    claw.set(false);
     profiler->setTarget(-5.75_in);
     profiler->waitUntilSettled();
-    turnToAngle(0_deg);
-    profiler->setTarget(-4_ft);
-
-    /*
-    moveTime({-0.5, 0.5}, 500_ms);
-    turnToAngle(90_deg);
-    claw.set(false); pros::delay(500);
-    
-    moveDistance(-7_in);
     liftController->setTarget(0);
     turnToAngle(0_deg);
-    mogo.set(false); mogoClamp.set(false);
 
-    moveDistance(1_ft);
-    turnToAngle(180_deg);
-    moveTime({0.6, 0.6}, 800_ms);
-    claw.set(true); pros::delay(250);
-    liftController->setTarget(710); 
-    moveTime({-0.6, -0.6}, 600_ms);
-    liftController->waitUntilSettled();
-    turnToAngle(90_deg);
-    moveDistance(1.5_ft, 1_s);
-    claw.set(false);
-    moveDistance(-6.5_ft, 3_s);
-
-    moveDistance(2.5_ft);
-    turnToAngle(225_deg);
-    moveDistance(4.5_ft);
-    turnToAngle(270_deg);
-
-    moveTime({0.5, 0.5}, 1_s);
-    profiler->setTarget(-10_in);
+    // grab side blue mogo
+    profiler->setTarget((-4.5_ft));
     profiler->waitUntilSettled();
-    turnToAngle(180_deg);
-    moveTime({0.5, 0.5}, 1_s);
-    profiler->setTarget(-4_in);
+    pros::delay(300);
+    mogoClamp.set(true);
+    pros::delay(100);
+    mogo.set(true);
+
+    // grab right side yellow
+    turnToAngle(65_deg);
+    profiler->setTarget(75_cm);
     profiler->waitUntilSettled();
-    turnToAngle(270_deg);
-
-    moveTime({-0.5, -0.5}, 650_ms); pros::delay(250);
-    mogoClamp.set(true); pros::delay(250); mogo.set(true);
-    profiler->setTarget(Skills::path2);
-    profiler->waitUntilSettled();
-
-    liftController->setTarget(0);
-    turnToAngle(90_deg);
-    moveDistance(1_ft);
-    moveTime({0.25, 0.25}, 600_ms); 
-    claw.set(true); pros::delay(250);
-
-    liftController->setTarget(710);
-    turnToAngle(47.5_deg); 
-    moveDistance(5_ft, 2_s);
-    turnToAngle(90_deg);
-    moveDistance(1_ft, 1000_ms);
-    claw.set(false); pros::delay(250);
-
-    moveDistance(-2_ft);
-    mogo.set(false); mogoClamp.set(false);
-    liftController->setTarget(0);
-    moveDistance(10_in);
-    turnToAngle(270_deg);
-    liftController->waitUntilSettled();
-    moveTime({0.5, 0.5}, 850_ms);
-    claw.set(true); pros::delay(250);
-    liftController->setTarget(710);
-    turnToAngle(100_deg);
-    moveDistance(4_ft, 2000_ms);
-    claw.set(false); pros::delay(250);
-
-    moveDistance(-1_ft);
-    turnToAngle(0_deg);
-    moveDistance(4_ft, 2_s);
-    turnToAngle(90_deg);
-
-    moveTime({0.5, 0.5}, 1.5_s);
-    profiler->setTarget(-4_in);
-    profiler->waitUntilSettled();
-    turnToAngle(0_deg);
-    moveTime({0.5, 0.5}, 1.5_s);
-    profiler->setTarget(-4_in);
-    profiler->waitUntilSettled();
-    turnToAngle(-90_deg);
-
-    liftController->setTarget(0);
-    liftController->waitUntilSettled();
-    pros::delay(1200);
-
-    profiler->setTarget(8_ft);
-    pros::delay(800);
     claw.set(true);
-    pros::delay(250);
-    liftController->setTarget(710);
+    
+    // score right side yellow
+    //profiler->setTarget(148_cm);
+    profiler->setTarget(Skills::path5);
+    pros::delay(100);
+    liftController->setTarget(MAX_LIFT_HEIGHT);
     profiler->waitUntilSettled();
-    */
+    claw.set(false);
+    pros::delay(300);
+
+    // score dropped blue mogo
+    profiler->setTarget(-6_in);
+    profiler->waitUntilSettled();
+    liftController->setTarget(0);
+    turnToAngle(0_deg);
+    profiler->setTarget(1.2_tile);
+    pros::delay(50);
+    mogoClamp.set(false);
+    profiler->waitUntilSettled();
+    pros::delay(100);
+    claw.set(true);
+    liftController->setTarget(MAX_LIFT_HEIGHT);
+    pros::delay(1000);
+    turnToAngle(90_deg);
+    profiler->setTarget(6_in);
+    profiler->waitUntilSettled();
+    claw.set(false);
+    
+    // grab other blue alliance
+    profiler->setTarget(-6_in);
+    profiler->waitUntilSettled();
+    turnToAngle(-180_deg);
+    profiler->setTarget(1_tile);
+    profiler->waitUntilSettled();
+    pros::delay(100);
+    claw.set(true);
+
 }
 
 
