@@ -85,16 +85,7 @@ void opcontrol(void);
 
 #include "gif-pros/gifclass.hpp"
 
-#include "lib/Units.hpp"
-#include "lib/Math.hpp"
-#include "lib/TaskWrapper.hpp"
-#include "lib/Pneumatics.hpp"
-#include "lib/StateMachine.hpp"
-#include "lib/Trajectory.hpp"
-#include "lib/FeedForward.hpp"
-#include "lib/LinearMotionProfile.hpp"
-#include "lib/AsyncProfiler.hpp"
-#include "lib/Odometry.hpp"
+#include "ryanlib/api.hpp"
 
 #include "Subsystems/Globals.hpp"
 #include "Subsystems/Drive.hpp"
@@ -103,6 +94,8 @@ void opcontrol(void);
 
 #include "Pathing/Skills.hpp"
 #include "Pathing/Match.hpp"
+
+using namespace ryan;
 
 
 #endif

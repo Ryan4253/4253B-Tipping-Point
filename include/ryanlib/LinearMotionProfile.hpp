@@ -1,15 +1,19 @@
 #pragma once
-#include "main.h"
+#include "Units.hpp"
+#include "Math.hpp"
+#include "Trajectory.hpp"
+
+namespace ryan{
 
 /**
  * @brief A struct that stores the physical constraints of the chassis
  * 
  */
 struct ProfileConstraint{
-    QSpeed maxVelocity{0.0};
-    QAcceleration maxAcceleration{0.0};
-    QAcceleration maxDeceleration{0.0};
-    QJerk maxJerk{0.0};
+    okapi::QSpeed maxVelocity{0.0};
+    okapi::QAcceleration maxAcceleration{0.0};
+    okapi::QAcceleration maxDeceleration{0.0};
+    okapi::QJerk maxJerk{0.0};
 
     /**
      * @brief Constructs a new Profile Constraint object
@@ -19,7 +23,9 @@ struct ProfileConstraint{
      * @param maxDecel max deceleration (only used in trapezoidal motion profiles)
      * @param maxJerk max jerk (only used in s curve motion profiles)
      */
-    ProfileConstraint(QSpeed maxVel, QAcceleration maxAccel, QAcceleration maxDecel, QJerk maxJerk);
+    ProfileConstraint(okapi::QSpeed maxVel, okapi::QAcceleration maxAccel, okapi::QAcceleration maxDecel, okapi::QJerk maxJerk);
+
+    ProfileConstraint(okapi::QSpeed maxVel, okapi::QAcceleration maxAccel, okapi::QJerk maxJerk);
 
     /**
      * @brief Destroys the Profile Constraint object
@@ -48,14 +54,14 @@ struct ProfileConstraint{
 class LinearMotionProfile {
     protected:
     ProfileConstraint constraint;
-    QLength distance{0.0};
+    okapi::QLength distance{0.0};
     bool isReversed{false};
 
-    std::vector<QTime> timePhase;
-    std::vector<QLength> distPhase;
-    std::vector<QSpeed> velPhase;
-    std::vector<QAcceleration> accPhase;
-    std::vector<QJerk> jerkPhase;
+    std::vector<okapi::QTime> timePhase;
+    std::vector<okapi::QLength> distPhase;
+    std::vector<okapi::QSpeed> velPhase;
+    std::vector<okapi::QAcceleration> accPhase;
+    std::vector<okapi::QJerk> jerkPhase;
 
     public:
     /**
@@ -75,7 +81,7 @@ class LinearMotionProfile {
      * 
      * @param iDistance new target distance
      */
-    virtual void setDistance(QLength iDistance) = 0;
+    virtual void setDistance(okapi::QLength iDistance) = 0;
 
     /**
      * @brief sets chassis constraints
@@ -89,7 +95,7 @@ class LinearMotionProfile {
      * 
      * @return QTime total time to run the profile
      */
-    virtual QTime getTotalTime() const = 0;
+    virtual okapi::QTime getTotalTime() const = 0;
 
     /**
      * @brief Gets the target position at a given time
@@ -97,7 +103,7 @@ class LinearMotionProfile {
      * @param time time step to query
      * @return QLength the distance travelled at the target time
      */
-    virtual QLength getPosition(QTime time) const = 0;
+    virtual okapi::QLength getPosition(okapi::QTime time) const = 0;
 
     /**
      * @brief Gets the target velocity at a given time
@@ -105,7 +111,7 @@ class LinearMotionProfile {
      * @param time time step to query
      * @return QSpeed target velocity at the target time
      */
-    virtual QSpeed getVelocity(QTime time) const = 0;
+    virtual okapi::QSpeed getVelocity(okapi::QTime time) const = 0;
 
     /**
      * @brief Gets the target acceleration at a given time
@@ -113,7 +119,7 @@ class LinearMotionProfile {
      * @param time time step to query
      * @return QAcceleration target acceleration at the target time
      */
-    virtual QAcceleration getAcceleration(QTime time) const = 0;
+    virtual okapi::QAcceleration getAcceleration(okapi::QTime time) const = 0;
     
     /**
      * @brief gets the kinematics data (position, velocity, acceleration) at a given time
@@ -121,7 +127,7 @@ class LinearMotionProfile {
      * @param time time step to query
      * @return TrajectoryPoint target kinematics data at the target time
      */
-    virtual TrajectoryPoint get(QTime time) const = 0;
+    virtual TrajectoryPoint get(okapi::QTime time) const = 0;
 };
 
 /**
@@ -136,21 +142,21 @@ class LinearMotionProfile {
  */
 class TrapezoidalMotionProfile : public LinearMotionProfile{
     private:
-    QLength min3Stage = 0_m;
+    okapi::QLength min3Stage = 0 * okapi::meter;
 
     public:
     TrapezoidalMotionProfile(ProfileConstraint iConstraint);
     TrapezoidalMotionProfile() = default;
     ~TrapezoidalMotionProfile() = default;
 
-    void setDistance(QLength iDistance) override;
+    void setDistance(okapi::QLength iDistance) override;
     void setConstraint(ProfileConstraint iConstraint) override;
 
-    QTime getTotalTime() const override;
-    QLength getPosition(QTime time) const override;
-    QSpeed getVelocity(QTime time) const override;
-    QAcceleration getAcceleration(QTime time) const override;
-    TrajectoryPoint get(QTime time) const override;
+    okapi::QTime getTotalTime() const override;
+    okapi::QLength getPosition(okapi::QTime time) const override;
+    okapi::QSpeed getVelocity(okapi::QTime time) const override;
+    okapi::QAcceleration getAcceleration(okapi::QTime time) const override;
+    TrajectoryPoint get(okapi::QTime time) const override;
 };
 
 /**
@@ -164,8 +170,8 @@ class TrapezoidalMotionProfile : public LinearMotionProfile{
  *        are omitted. 
  */
 class SCurveMotionProfile : public LinearMotionProfile{
-    QLength fullDist = 0_m;
-    QLength minDist = 0_m;
+    okapi::QLength fullDist = 0 * okapi::meter;
+    okapi::QLength minDist = 0 * okapi::meter;
     bool fullAccel{true};
 
     public:
@@ -173,12 +179,14 @@ class SCurveMotionProfile : public LinearMotionProfile{
     SCurveMotionProfile() = default;
     ~SCurveMotionProfile() = default;
 
-    void setDistance(QLength iDistance) override;
+    void setDistance(okapi::QLength iDistance) override;
     void setConstraint(ProfileConstraint iConstraint) override;
 
-    QTime getTotalTime() const override;
-    QLength getPosition(QTime time) const override;
-    QSpeed getVelocity(QTime time) const override;
-    QAcceleration getAcceleration(QTime time) const override;
-    TrajectoryPoint get(QTime time) const override;
+    okapi::QTime getTotalTime() const override;
+    okapi::QLength getPosition(okapi::QTime time) const override;
+    okapi::QSpeed getVelocity(okapi::QTime time) const override;
+    okapi::QAcceleration getAcceleration(okapi::QTime time) const override;
+    TrajectoryPoint get(okapi::QTime time) const override;
 };
+
+}

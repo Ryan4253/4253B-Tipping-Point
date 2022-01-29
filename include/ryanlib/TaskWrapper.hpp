@@ -1,10 +1,14 @@
 #pragma once
-#include "main.h"
+#include "pros/rtos.hpp"
+#include <memory>
+
+namespace ryan{
 
 /*
  * A utility class that wraps a task trampoline. To use, simply inherit your class from TaskWrapper
  * and override the `loop` method. To start the task, the `startTask` method must be called, either
  * from the constructor or from outside the class.
+ * 
  */
 
 class TaskWrapper {
@@ -73,3 +77,4 @@ class TaskWrapper {
         static void trampoline(void* iparam);
         std::unique_ptr<pros::Task> task {nullptr};
 };
+}

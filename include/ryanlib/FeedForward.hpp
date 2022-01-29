@@ -1,5 +1,7 @@
 #pragma once
-#include "main.h"
+#include "Math.hpp"
+
+namespace ryan{
 
 /**
  * @brief Our custom feedforward velocity controller class - used for motion profiles
@@ -40,11 +42,11 @@ class FFVelocityController{
          * @param position desired position
          * @param velocity desired velocity
          * @param acceleration desired acceleration
-         * @param currentPos current position, in motor ticks
-         * @param currentRPM current RPM
+         * @param currentPos current position, in feets
+         * @param currentVel current velocity, in ftps
          * @return calculated power to reach the target velocity
          */
-        double step(double position, double velocity, double acceleration, double currentPos, double currentRPM);
+        double step(double position, double velocity, double acceleration, double currentPos, double currentVel);
 
         /**
          * @brief Returns the target power
@@ -60,4 +62,6 @@ class FFVelocityController{
          */
         double getkV() const;
 };
+
+}
 

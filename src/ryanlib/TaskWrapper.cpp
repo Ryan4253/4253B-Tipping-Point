@@ -1,4 +1,6 @@
-#include "main.h"
+#include "TaskWrapper.hpp"
+
+namespace ryan{
 
 TaskWrapper::~TaskWrapper(){
     task->remove();
@@ -31,4 +33,6 @@ void TaskWrapper::trampoline(void* iparam){
         TaskWrapper* that = static_cast<TaskWrapper*>(iparam);
         that->loop();
     }
+}
+
 }

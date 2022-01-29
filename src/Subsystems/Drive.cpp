@@ -41,7 +41,7 @@ void moveDistance(QLength target, QTime time) {
     timer->placeMark();  
 
 	do {
-        double dist = Math::tickToFt(((chassis->getModel())->getSensorVals()[0] + (chassis->getModel())->getSensorVals()[1]) / 2) * 12;
+        double dist = Math::tickToFt(((chassis->getModel())->getSensorVals()[0] + (chassis->getModel())->getSensorVals()[1]) / 2, chassis->getChassisScales(), chassis->getGearsetRatioPair()) * 12;
         double error = target.convert(inch) - dist;
         (chassis->getModel())->arcade(movePID->step(-error), headingPID->step(imu.get()));
 		pros::delay(10);

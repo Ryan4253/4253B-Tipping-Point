@@ -1,5 +1,12 @@
 #pragma once
-#include "main.h"
+#include "Units.hpp"
+#include "okapi/api/device/motor/abstractMotor.hpp"
+#include "okapi/api/chassis/controller/chassisScales.hpp"
+#include <cmath>
+#include <utility>
+#include <stdexcept>
+
+namespace ryan{
 
 /**
  * @brief Namespace for all math related functions
@@ -35,7 +42,7 @@ T clamp(T val, T mn, T mx){return std::max(std::min(mx, val), mn);}
  * @param ftps feets per second
  * @return rounds per minute
  */
-double ftpsToRPM(double ftps);
+double ftpsToRPM(double ftps, okapi::ChassisScales scale, okapi::AbstractMotor::GearsetRatioPair gearset);
 
 /**
  * @brief Converts RPM to ft/s
@@ -43,7 +50,7 @@ double ftpsToRPM(double ftps);
  * @param rpm rounds per minute
  * @return feet per second
  */
-double rpmToFtps(double rpm);
+double rpmToFtps(double rpm, okapi::ChassisScales scale, okapi::AbstractMotor::GearsetRatioPair gearset);
 
 /**
  * @brief Converts ft to encoder ticks (aka. encoder degrees)
@@ -51,7 +58,7 @@ double rpmToFtps(double rpm);
  * @param ft feet
  * @return encoder ticks 
  */
-double ftToTick(double ft);
+double ftToTick(double ft, okapi::ChassisScales scale, okapi::AbstractMotor::GearsetRatioPair gearset);
 
 /**
  * @brief Converts encoder ticks to ft
@@ -59,16 +66,7 @@ double ftToTick(double ft);
  * @param tick encoder ticks
  * @return feet
  */
-double tickToFt(double tick);
-
-/**
- * @brief converts radius and angle to arc length using the formula s = rw
- * 
- * @param angle angle
- * @param rad radius
- * @return QLength computed arc length
- */
-QLength angleToArcLength(QAngle angle, QLength rad);
+double tickToFt(double tick, okapi::ChassisScales scale, okapi::AbstractMotor::GearsetRatioPair gearset);
 
 /**
  * @brief Rescales an angle to [-180, 180]
@@ -76,7 +74,7 @@ QLength angleToArcLength(QAngle angle, QLength rad);
  * @param angle Angle to be rescaled
  * @return rescaled angle
  */
-QAngle rescale180(QAngle angle);
+okapi::QAngle rescale180(okapi::QAngle angle);
 
 /**
  * @brief Rescales an angle to [-180, 180]
@@ -92,7 +90,7 @@ double rescale180(double angle);
  * @param angle angle to be rescaled
  * @return rescaled angle
  */
-QAngle rescale360(QAngle angle);
+okapi::QAngle rescale360(okapi::QAngle angle);
 
 /**
  * @brief Rescales an angle to [0, 360]
@@ -115,3 +113,5 @@ double rescale360(double angle);
 std::pair<double, double> quadraticFormula(double a, double b, double c);
 
 };
+
+}

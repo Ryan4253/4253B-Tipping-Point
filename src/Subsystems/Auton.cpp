@@ -175,13 +175,15 @@ void Auton::skills(){
     profiler->setTarget(Skills::path1);
     liftController->setTarget(710);
     profiler->waitUntilSettled();
+    turnToAngle(70_deg);
     turnToAngle(90_deg);
+
     claw.set(false);
     liftController->setTarget(MAX_LIFT_HEIGHT);
     pros::delay(500);
 
     // Drive back, drive to side alliance mogo
-    profiler->setTarget(-8_in); // initially -6
+    profiler->setTarget(-8_in);
     profiler->waitUntilSettled();
     turnToAngle(0_deg);
     liftController->setTarget(0);
@@ -223,7 +225,10 @@ void Auton::skills(){
 
     // grab right side yellow
     turnToAngle(65_deg);
-    profiler->setTarget(75_cm);
+    profiler->setTarget(80_cm);
+    liftController->setTarget(100);
+    pros::delay(800);
+    liftController->setTarget(0);
     profiler->waitUntilSettled();
     claw.set(true);
     
@@ -242,7 +247,7 @@ void Auton::skills(){
     liftController->setTarget(0);
     turnToAngle(0_deg);
     profiler->setTarget(1.2_tile);
-    pros::delay(50);
+    pros::delay(150);
     mogoClamp.set(false);
     profiler->waitUntilSettled();
     pros::delay(100);
@@ -257,12 +262,12 @@ void Auton::skills(){
     // grab other blue alliance
     profiler->setTarget(-6_in);
     profiler->waitUntilSettled();
+    liftController->setTarget(0);
     turnToAngle(-180_deg);
     profiler->setTarget(1_tile);
     profiler->waitUntilSettled();
     pros::delay(100);
     claw.set(true);
-
 }
 
 

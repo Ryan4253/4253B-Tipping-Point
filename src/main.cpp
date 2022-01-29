@@ -31,11 +31,11 @@ void autonomous(){
 }
 
 void opcontrol(){
-    //Auton::init();
-    //Auton::skills();
-    //while(true){
-      //  pros::delay(10);
-    //}
+    Auton::init();
+    Auton::skills();
+    while(true){
+        pros::delay(10);
+    }
 
     // Starts logo gif
     createBlankBackground();

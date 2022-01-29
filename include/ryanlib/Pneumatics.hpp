@@ -1,5 +1,7 @@
 #pragma once
-#include "main.h"
+#include "pros/adi.hpp"
+
+namespace ryan{
 
 /**
  * @brief Wrapper class for vex Pneumatics which allows more convenient control
@@ -37,3 +39,5 @@ class Pneumatics {
      */
     void set(bool iState);
 };
+
+}

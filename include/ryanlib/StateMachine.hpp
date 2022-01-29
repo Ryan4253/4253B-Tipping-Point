@@ -1,5 +1,7 @@
 #pragma once
-#include "main.h"
+#include "pros/rtos.hpp"
+
+namespace ryan{
 
 /**
  * @brief Template Wrapper class which allows easy state machine (有限狀態機) implementation. 
@@ -24,19 +26,30 @@ class StateMachine{
      * @brief Construct a new State Machine object
      * 
      */
-    StateMachine();
+    StateMachine(){}
 
     /**
      * @brief Get the current state
      * 
      * @return State the current state
      */
-    State getState();
+    State getState(){
+        stateLock.take();
+        State currentState = state;
+        stateLock.give();
+        return currentState;
+    }
 
     /**
      * @brief Set the current state
      * 
      * @param iState the new state
      */
-    void setState(State iState);
+    void setState(State iState){
+        stateLock.take();
+        state = iState;
+        stateLock.give();
+    }
 };
+
+}

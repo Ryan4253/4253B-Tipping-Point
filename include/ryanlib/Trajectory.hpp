@@ -1,5 +1,8 @@
 #pragma once
-#include "main.h"
+#include <iostream>
+#include <vector>
+
+namespace ryan{
 
 /**
  * @brief Structure for trajectory points, which stores the robot's target position, velocity
@@ -92,3 +95,5 @@ class Trajectory{
      */
     int size() const;
 };
+
+}
