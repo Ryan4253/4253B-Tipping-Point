@@ -19,6 +19,10 @@ enum class MotionProfileState{
     MOVE, FOLLOW, IDLE
 };
 
+enum class TurnType{
+    GLOBAL, LOCAL
+};
+
 // forward declare
 template class StateMachine<MotionProfileState>;
 
@@ -31,13 +35,13 @@ class AsyncMotionProfiler : public StateMachine<MotionProfileState, MotionProfil
     /**
      * @brief Construct a new Async Motion Profiler object (using all custom velocity control)
      * 
-     * @param iChassis 
-     * @param iMove 
-     * @param iLeftLinear 
-     * @param iRightLinear 
-     * @param iLeftTrajectory 
-     * @param iRightTrajectory 
-     * @param iTimeUtil 
+     * @param iChassis chassis to output to
+     * @param iMove linear motion profile constraint to generate
+     * @param iLeftLinear left velocity controller for linear motion profile
+     * @param iRightLinear right velocity controller for linear motion profile
+     * @param iLeftTrajectory left velocity controller for trajectories
+     * @param iRightTrajectory right velocity controller for trajectories
+     * @param iTimeUtil timer utility
      */
     AsyncMotionProfiler(std::shared_ptr<okapi::ChassisController> iChassis, 
                         std::unique_ptr<LinearMotionProfile> iMove, 
@@ -100,6 +104,23 @@ class AsyncMotionProfiler : public StateMachine<MotionProfileState, MotionProfil
      * @param waitUntilSettled whether or not to wait until the motion profile is settled
      */ 
     void setTarget(const Trajectory& iPath, bool waitUntilSettled = false);
+
+     /**
+     * @brief Set the Target angle to turn
+     * 
+     * @param iPath target angle to turn
+     * @param iType whether to do a global or local turn
+     * @param waitUntilSettled whether or not to wait until the motion profile is settled
+     */ 
+    void setTarget(okapi::QAngle iAngle, TurnType iType = TurnType::GLOBAL, bool waitUntilSettled = false);
+
+    void logLeftVelocity(bool flag);
+
+    void logRightVelocity(bool flag);
+
+    void logLeftPosition(bool flag);
+
+    void logRightPosition(bool flag);
 
     /**
      * @brief stop the chassis from moving

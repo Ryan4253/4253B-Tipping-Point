@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 void initialize(){
     // Screen initialization
 	pros::lcd::initialize();
@@ -27,15 +26,20 @@ void disabled(){}
 void competition_initialize(){}
 
 void autonomous(){
-    Auton::execute();
+
 }
 
 void opcontrol(){
+    auto timer = okapi::TimeUtilFactory::createDefault().getTimer();
+    timer->getDt();
     Auton::init();
-    Auton::skills();
+    Auton::left();
+    QTime t = timer->getDt();
+    pros::lcd::print(0, "dt: %f", t.convert(millisecond));
     while(true){
         pros::delay(10);
     }
+
 
     // Starts logo gif
     createBlankBackground();
@@ -45,7 +49,7 @@ void opcontrol(){
     int liftPos = 0;
 
     // Disable Lift Task
-    //liftController->flipDisable();
+    liftController->flipDisable();
 
     // Sets motor brake mode
     leftDrive.setBrakeMode(AbstractMotor::brakeMode::coast);
@@ -68,9 +72,17 @@ void opcontrol(){
          *        L2 pressed: decrements target angle by LIFT_STEP
          *        note: target angle is capped to [0, MAX_LIFT_HEIGHT] to protect the lift
          */
-        liftPos += LIFT_STEP * master.getDigital(ControllerDigital::L1); 
-        liftPos -= LIFT_STEP * master.getDigital(ControllerDigital::L2);
-        liftController->setTarget(liftPos = Math::clamp(liftPos, 0, MAX_LIFT_HEIGHT));
+        if(master.getDigital(ControllerDigital::L1) && master.getDigital(ControllerDigital::L2)) {
+            //lift.moveVelocity(0);
+            lift.moveVoltage(0);
+        } else if(master.getDigital(ControllerDigital::L1)) {
+            lift.moveVoltage(12000);
+        } else if(master.getDigital(ControllerDigital::L2)) {
+            lift.moveVoltage(-12000);
+        } else {
+            lift.moveVoltage(0);
+            //lift.moveVelocity(0);
+        }
 
         /**
          * @brief controlls our roller

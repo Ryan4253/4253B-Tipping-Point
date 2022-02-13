@@ -84,6 +84,41 @@ void Auton::wingGrab() {
 }
 
 void Auton::left(){
+    liftController->setTarget(100);
+    mogoClamp.set(true); pros::delay(250); mogo.set(true);
+    profiler->setTarget(Skills::path0);
+    pros::delay(1000);
+    liftController->setTarget(0);
+    roller.moveVoltage(12000);
+    profiler->waitUntilSettled();
+    claw.set(true);
+    //liftController->setTarget(200);
+
+    // drive forward, deposit first yellow
+    profiler->setTarget(2 * okapi::tile);
+    profiler->waitUntilSettled();
+    //liftController->setTarget(0);
+    claw.set(false);
+
+    // get center mogo
+    profiler->setTarget(-0.5_tile);
+    profiler->waitUntilSettled();
+    turnToAngle(-128_deg);
+    profiler->setTarget(8_in);
+    profiler->waitUntilSettled();
+
+    profiler->setTarget((1.5_tile) + (6_in));
+    profiler->waitUntilSettled();
+    profiler->setTarget(-6_in);
+    profiler->waitUntilSettled();
+
+    turnToAngle(135_deg);
+    profiler->setTarget(1_tile);
+    profiler->waitUntilSettled();
+    claw.set(true);
+    mogo.set(false);
+    profiler->setTarget(-42_in);
+    profiler->waitUntilSettled();
     
 }
 
@@ -157,8 +192,6 @@ void Auton::awp(){
     profiler->setTarget(1.5_ft);
     profiler->waitUntilSettled();
 }
-
-
 
 void Auton::skills(){
     // Get 1st Mogo

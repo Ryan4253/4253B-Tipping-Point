@@ -22,32 +22,11 @@ double Math::rpmToFtps(double rpm, okapi::ChassisScales scale, okapi::AbstractMo
 }
 
 double Math::ftToTick(double ft, okapi::ChassisScales scale, okapi::AbstractMotor::GearsetRatioPair gearset){
-    double tpr;
-    if(gearset.internalGearset == okapi::AbstractMotor::gearset::red){
-        tpr = 1800;
-    }
-    else if(gearset.internalGearset == okapi::AbstractMotor::gearset::green){
-        tpr = 900;
-    }
-    else if(gearset.internalGearset == okapi::AbstractMotor::gearset::blue){
-        tpr = 300;
-    }
-    return ft * 12 / (scale.wheelDiameter.convert(okapi::inch)*M_PI) * (gearset.ratio) * tpr;
+    return ft * 12 / (scale.wheelDiameter.convert(okapi::inch)*M_PI) * (gearset.ratio) * scale.tpr;
 }
 
 double Math::tickToFt(double tick, okapi::ChassisScales scale, okapi::AbstractMotor::GearsetRatioPair gearset){
-    double tpr;
-    if(gearset.internalGearset == okapi::AbstractMotor::gearset::red){
-        tpr = 1800;
-    }
-    else if(gearset.internalGearset == okapi::AbstractMotor::gearset::green){
-        tpr = 900;
-    }
-    else if(gearset.internalGearset == okapi::AbstractMotor::gearset::blue){
-        tpr = 300;
-    }
-
-    return (tick/tpr)/(gearset.ratio)*(scale.wheelDiameter.convert(okapi::inch)*M_PI)/12;
+    return (tick/scale.tpr)/(gearset.ratio)*(scale.wheelDiameter.convert(okapi::inch)*M_PI)/12;
 }
 
 okapi::QAngle Math::rescale180(okapi::QAngle angle){
