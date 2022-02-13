@@ -83,6 +83,40 @@ void Auton::wingGrab() {
     wings.set(true); pros::delay(500); wings.set(false); pros::delay(500);
 }
 
+void Auton::chenryLRTAuton() {
+    profiler->setTarget(7_ft, true);
+
+    profiler->setTarget(-5.35_ft, true);
+
+    turnToAngle(-90_deg);
+
+    profiler->setTarget(-1.25_ft, true);
+
+    mogoClamp.set(true); pros::delay(250); mogo.set(true);
+
+    profiler->setTarget(1.5_ft);
+    roller.moveVoltage(12000);
+    profiler->waitUntilSettled();
+
+    turnToAngle(-45_deg);
+
+    roller.moveVoltage(0);
+
+    profiler->setTarget(8_ft, true);
+    
+    profiler->setTarget(-0.5_ft, true);
+
+    turnToAngle(180_deg);
+
+    profiler->setTarget(Match::chenryLRTPath1, true);
+
+    // profiler->setTarget(4_ft);
+    // profiler->waitUntilSettled();
+
+    // profiler->setTarget(-3.5_ft);
+    // profiler->waitUntilSettled();
+}
+
 void Auton::left(){
     liftController->setTarget(100);
     mogoClamp.set(true); pros::delay(250); mogo.set(true);

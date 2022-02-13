@@ -89,4 +89,6 @@ namespace Auton {
      * 
      */
     void awp();
+
+    void chenryLRTAuton();
 };

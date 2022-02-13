@@ -26,24 +26,25 @@ void disabled(){}
 void competition_initialize(){}
 
 void autonomous(){
-
+    Auton::init();
+    Auton::chenryLRTAuton();
 }
 
 void opcontrol(){
-    auto timer = okapi::TimeUtilFactory::createDefault().getTimer();
-    timer->getDt();
-    Auton::init();
-    Auton::left();
-    QTime t = timer->getDt();
-    pros::lcd::print(0, "dt: %f", t.convert(millisecond));
-    while(true){
-        pros::delay(10);
-    }
+    // auto timer = okapi::TimeUtilFactory::createDefault().getTimer();
+    // timer->getDt();
+    // Auton::init();
+    // Auton::chenryLRTAuton();
+    // QTime t = timer->getDt();
+    // pros::lcd::print(0, "dt: %f", t.convert(millisecond));
+    // while(true){
+    //     pros::delay(10);
+    // }
 
 
     // Starts logo gif
-    createBlankBackground();
-    Gif gif("/usd/gif/logo.gif", lv_scr_act());
+    // createBlankBackground();
+    // Gif gif("/usd/gif/crab-rave.gif", lv_scr_act());
 
     // Initializes variable
     int liftPos = 0;
@@ -111,7 +112,7 @@ void opcontrol(){
          *        When X is pressed: toggles the state of the mogo solenoid
          */
         if(master[ControllerDigital::X].changedToPressed()){
-            mogo.toggle();
+            mogoClamp.toggle();
         }
 
         /**
@@ -120,6 +121,8 @@ void opcontrol(){
          */
         if(master[ControllerDigital::R2].changedToPressed()){
             mogoClamp.toggle();
+            pros::delay(250);
+            mogo.toggle();
         }
 
         /**

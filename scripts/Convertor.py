@@ -1,10 +1,11 @@
 import pyperclip
 
 # Auton namespaces (uncomment the auton you're working on)
-auton = 'Skills'
+# auton = 'Skills'
 # auton = 'AWP'
 # auton = 'Left'
 # auton = 'Right'
+auton = 'Match'
 
 
 out = ''
