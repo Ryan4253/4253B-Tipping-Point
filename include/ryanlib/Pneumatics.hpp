@@ -1,5 +1,6 @@
 #pragma once
 #include "pros/adi.hpp"
+#include "Units.hpp"
 
 namespace ryan{
 
@@ -38,6 +39,8 @@ class Pneumatics {
      * @param iState state
      */
     void set(bool iState);
+
+    bool getState() const;
 };
 
 }

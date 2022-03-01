@@ -290,6 +290,7 @@ void Auton::skills(){
     pros::delay(100);
     mogo.set(true);
 
+
     // grab right side yellow
     turnToAngle(65_deg);
     profiler->setTarget(80_cm);

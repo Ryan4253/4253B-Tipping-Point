@@ -30,6 +30,17 @@ void autonomous(){
     Auton::chenryLRTAuton();
 }
 
+inline double driveCurve(double power){
+    if(power == 0) return 0;
+
+    if(power > 0){
+        return pow(power, 0.76);
+    }
+    else{
+        return -pow(-power, 0.76);
+    }
+}
+
 void opcontrol(){
     // auto timer = okapi::TimeUtilFactory::createDefault().getTimer();
     // timer->getDt();
@@ -43,14 +54,15 @@ void opcontrol(){
 
 
     // Starts logo gif
-    // createBlankBackground();
-    // Gif gif("/usd/gif/crab-rave.gif", lv_scr_act());
+    //createBlankBackground();
+    //Gif gif("/usd/gif/crab-rave.gif", lv_scr_act());
 
     // Initializes variable
     int liftPos = 0;
 
     // Disable Lift Task
-    liftController->flipDisable();
+    liftController->flipDisable(true);
+    bool state = true;
 
     // Sets motor brake mode
     leftDrive.setBrakeMode(AbstractMotor::brakeMode::coast);
@@ -65,7 +77,8 @@ void opcontrol(){
          */
         double power = Math::deadband(master.getAnalog(ControllerAnalog::leftY), DEADBAND);
         double curvature = Math::deadband(master.getAnalog(ControllerAnalog::rightX), DEADBAND);
-        curvatureDrive(power, curvature, power == 0);
+        std::cout << driveCurve(power) << std::endl;
+        curvatureDrive(driveCurve(power), 0.5 * curvature, power == 0);
 
         /**
          * @brief lift control using an async PID controller
@@ -74,7 +87,6 @@ void opcontrol(){
          *        note: target angle is capped to [0, MAX_LIFT_HEIGHT] to protect the lift
          */
         if(master.getDigital(ControllerDigital::L1) && master.getDigital(ControllerDigital::L2)) {
-            //lift.moveVelocity(0);
             lift.moveVoltage(0);
         } else if(master.getDigital(ControllerDigital::L1)) {
             lift.moveVoltage(12000);
@@ -82,16 +94,7 @@ void opcontrol(){
             lift.moveVoltage(-12000);
         } else {
             lift.moveVoltage(0);
-            //lift.moveVelocity(0);
         }
-
-        /**
-         * @brief controlls our roller
-         *        When both L1 and L2 pressed: runs the roller inward (intakes)
-         *        When A is pressed: runs the roller outward (outtakes)
-         *        When Both are pressed / unpressed: no movement
-         */
-        roller.moveVoltage(12000*((master.getDigital(ControllerDigital::L1) && master.getDigital(ControllerDigital::L2))-master.getDigital(ControllerDigital::A)));
 
         /**
          * @brief controls the claw depending on the button value 
@@ -100,18 +103,16 @@ void opcontrol(){
          */
         claw.set(master.getDigital(ControllerDigital::R1));
 
-        /**
-         * @brief controls the wing depending on the button value 
-         *        When Y is pressed: wing solenoid is set to true
-         *        When Y is unpressed: wing solenoid is set to false
-         */
-        wings.set(master.getDigital(ControllerDigital::Y));
+        if(master[ControllerDigital::X].changedToPressed()){
+            roller.moveVelocity(state * 600);
+            state = !state;
+        }
 
         /**
          * @brief controls the mogo holder pistons using rising edge detection (上升緣觸發)
          *        When X is pressed: toggles the state of the mogo solenoid
          */
-        if(master[ControllerDigital::X].changedToPressed()){
+        if(master[ControllerDigital::Y].changedToPressed()){
             mogoClamp.toggle();
         }
 
@@ -120,9 +121,16 @@ void opcontrol(){
          *        When R2 is pressed: toggles the state of the mogo clamp
          */
         if(master[ControllerDigital::R2].changedToPressed()){
-            mogoClamp.toggle();
-            pros::delay(250);
-            mogo.toggle();
+            if(mogoClamp.getState() == false){
+                mogoClamp.toggle();
+                pros::delay(250);
+                mogo.toggle();
+            }
+            else{
+                mogo.toggle();
+                pros::delay(250);
+                mogoClamp.toggle();
+            }
         }
 
         /**

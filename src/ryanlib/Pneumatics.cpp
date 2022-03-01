@@ -16,4 +16,8 @@ void Pneumatics::set(bool iState){
     piston.set_value(iState);
 }
 
+bool Pneumatics::getState() const{
+    return state;
+}
+
 }

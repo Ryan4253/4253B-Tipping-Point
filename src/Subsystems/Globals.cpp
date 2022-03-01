@@ -23,7 +23,9 @@ pros::Vision vision_sensor (17, pros::E_VISION_ZERO_CENTER);
 Pneumatics mogo('E');
 Pneumatics mogoClamp('F');
 Pneumatics claw('D');
-Pneumatics wings('H');
+Pneumatics wings('H'); 
+
+Pneumatics needle('A');
 
 // MOTION PROFILE CONSTANTS
 ProfileConstraint constraint({4.8_ftps, 17.5_ftps2, 17.5_ftps2, 25_ftps3});
