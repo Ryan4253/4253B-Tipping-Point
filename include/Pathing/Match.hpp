@@ -8,6 +8,5 @@
  * 
  */
 namespace Match{
-    extern Trajectory path0;
     extern Trajectory chenryLRTPath1;
 };

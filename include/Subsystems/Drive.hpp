@@ -15,6 +15,14 @@
 void curvatureDrive(double moveC, double turnC, bool quickTurn);
 
 /**
+ * @brief Scales the joystock value to Ryan's liking (sigmoid is probably better than this)
+ * 
+ * @param power joystick reading, [-1, 1]
+ * @return double scaled power, [-1, 1]
+ */
+double driveCurve(double power);
+
+/**
  * @brief Moves for set amount of time at set speed
  * 
  * @param speed speed [-1, 1]

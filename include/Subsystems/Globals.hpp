@@ -48,6 +48,10 @@ extern std::shared_ptr<IterativePosPIDController> visionPID;
 extern std::shared_ptr<IterativePosPIDController> movePID;
 extern std::shared_ptr<IterativePosPIDController> headingPID;
 
+/**
+ * @brief Create a Blank Background using LVGL
+ * 
+ */
 void createBlankBackground();
 
 

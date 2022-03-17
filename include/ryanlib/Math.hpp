@@ -112,6 +112,14 @@ double rescale360(double angle);
  */
 std::pair<double, double> quadraticFormula(double a, double b, double c);
 
+/**
+ * @brief returns the sign of the value
+ * 
+ * @param value the value to check the sign
+ * @return int the sign of the value (-1, 0, 1)
+ */
+int signum(double value);
+
 };
 
 }

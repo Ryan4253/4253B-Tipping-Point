@@ -13,12 +13,6 @@ void initialize(){
     imu.calibrate();
     pros::delay(3000);
     pros::lcd::set_text(2, "imu calibrated");
-
-    // Adds autonomous functions
-    Auton::add([](){}, "Do Nothing");
-    Auton::add(Auton::skills, "Skills");
-    Auton::add(Auton::right, "Right Wing");
-    Auton::add(Auton::awp, "AWP Wing");
 }
 
 void disabled(){}
@@ -30,39 +24,14 @@ void autonomous(){
     Auton::chenryLRTAuton();
 }
 
-inline double driveCurve(double power){
-    if(power == 0) return 0;
-
-    if(power > 0){
-        return pow(power, 0.76);
-    }
-    else{
-        return -pow(-power, 0.76);
-    }
-}
-
 void opcontrol(){
-    // auto timer = okapi::TimeUtilFactory::createDefault().getTimer();
-    // timer->getDt();
-    // Auton::init();
-    // Auton::chenryLRTAuton();
-    // QTime t = timer->getDt();
-    // pros::lcd::print(0, "dt: %f", t.convert(millisecond));
-    // while(true){
-    //     pros::delay(10);
-    // }
-
-
     // Starts logo gif
-    //createBlankBackground();
-    //Gif gif("/usd/gif/crab-rave.gif", lv_scr_act());
-
-    // Initializes variable
-    int liftPos = 0;
+    createBlankBackground();
+    std::unique_ptr<Gif> gif = std::make_unique<Gif>("/usd/gif/crab-rave.gif", lv_scr_act());
 
     // Disable Lift Task
     liftController->flipDisable(true);
-    bool state = true;
+    bool rollerState = true;
 
     // Sets motor brake mode
     leftDrive.setBrakeMode(AbstractMotor::brakeMode::coast);
@@ -77,7 +46,6 @@ void opcontrol(){
          */
         double power = Math::deadband(master.getAnalog(ControllerAnalog::leftY), DEADBAND);
         double curvature = Math::deadband(master.getAnalog(ControllerAnalog::rightX), DEADBAND);
-        std::cout << driveCurve(power) << std::endl;
         curvatureDrive(driveCurve(power), 0.5 * curvature, power == 0);
 
         /**
@@ -104,8 +72,8 @@ void opcontrol(){
         claw.set(master.getDigital(ControllerDigital::R1));
 
         if(master[ControllerDigital::X].changedToPressed()){
-            roller.moveVelocity(state * 600);
-            state = !state;
+            roller.moveVelocity(rollerState * 600);
+            rollerState = !rollerState;
         }
 
         /**
@@ -131,20 +99,6 @@ void opcontrol(){
                 pros::delay(250);
                 mogoClamp.toggle();
             }
-        }
-
-        /**
-         * @brief switches the desired autnomous if right is pressed
-         */
-        if(master[ControllerDigital::right].changedToPressed()){
-            Auton::switchAuton();
-        }
-
-        /**
-         * @brief writes the desired autonomous to the SD Card if left is pressed
-         */
-        if(master[ControllerDigital::left].changedToPressed()){
-            Auton::select();
         }
 
         pros::delay(10);

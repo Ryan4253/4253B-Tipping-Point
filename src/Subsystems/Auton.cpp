@@ -1,62 +1,5 @@
 #include "main.h"
 
-std::map<std::string, AutonFunction> Auton::auton;
-std::map<int, std::string> Auton::name;
-std::string Auton::currentName = "";
-int Auton::index = 0;
-
-
-void Auton::add(AutonFunction iAutonomous, std::string iName){
-    auton.insert(make_pair(iName, iAutonomous));
-    name.insert(make_pair(auton.size(), iName));
-}
-
-void Auton::switchAuton(){
-    if(auton.size() == 0){
-        return;
-    }
-    index++;
-    index %= auton.size();
-}
-
-void Auton::select(){
-    if(auton.size() == 0){
-        return;
-    }
-    std::ofstream file("/usd/auton.txt", std::ios::out);
-    
-    file << getCandidateName();
-}
-
-std::string Auton::getCandidateName(){
-    if(auton.size() == 0){
-        return "";
-    }
-    auto ret = name.find(index);
-    return ret->second;
-}
-
-std::string Auton::getSelectedName(){
-    return currentName;
-}
-
-void Auton::execute(){
-    std::ifstream file("/usd/auton.txt", std::ios::in);
-    if(file.peek() == std::ifstream::traits_type::eof()){
-        return;
-    }
-
-    std::string autonName; file >> autonName;
-
-    auto it = auton.find(autonName);
-
-    if(it == auton.end()){
-        return;
-    }
-
-    it->second();
-}
-
 void Auton::init() {
     // sets brake mode
     leftDrive.setBrakeMode(AbstractMotor::brakeMode::hold);
@@ -70,51 +13,38 @@ void Auton::init() {
 
 void Auton::wingGrab() {
     wings.set(true);
-
     profiler->setTarget(-2.75_ft);
     pros::delay(775);
-
     wings.set(false);
     profiler->waitUntilSettled();
 
     profiler->setTarget(3.5_ft);
     profiler->waitUntilSettled();
-
     wings.set(true); pros::delay(500); wings.set(false); pros::delay(500);
 }
 
-void Auton::chenryLRTAuton() {
+void Auton::chenryLRTAuton(){
+    // pushes right yellow mogo into far home zone, drive back
     profiler->setTarget(7_ft, true);
-
     profiler->setTarget(-5.35_ft, true);
 
+    // grab alliance mogo
     turnToAngle(-90_deg);
-
     profiler->setTarget(-1.25_ft, true);
-
     mogoClamp.set(true); pros::delay(250); mogo.set(true);
 
+    // pushes center mogo to far home zone, score rings in alliance mogo
     profiler->setTarget(1.5_ft);
     roller.moveVoltage(12000);
     profiler->waitUntilSettled();
-
     turnToAngle(-45_deg);
-
     roller.moveVoltage(0);
-
     profiler->setTarget(8_ft, true);
     
+    // push left yellow mogo to close home zone
     profiler->setTarget(-0.5_ft, true);
-
     turnToAngle(180_deg);
-
     profiler->setTarget(Match::chenryLRTPath1, true);
-
-    // profiler->setTarget(4_ft);
-    // profiler->waitUntilSettled();
-
-    // profiler->setTarget(-3.5_ft);
-    // profiler->waitUntilSettled();
 }
 
 void Auton::left(){
@@ -126,7 +56,6 @@ void Auton::left(){
     roller.moveVoltage(12000);
     profiler->waitUntilSettled();
     claw.set(true);
-    //liftController->setTarget(200);
 
     // drive forward, deposit first yellow
     profiler->setTarget(2 * okapi::tile);
@@ -190,8 +119,8 @@ void Auton::right(){
 
 void Auton::awp(){
     wingGrab();
+
     turnToAngle(0_deg);
-    
     profiler->setTarget(-1.6_ft);
     profiler->waitUntilSettled();
     turnToAngle(90_deg);
@@ -244,14 +173,12 @@ void Auton::skills(){
     profiler->waitUntilSettled();
     turnToAngle(70_deg);
     turnToAngle(90_deg);
-
     claw.set(false);
     liftController->setTarget(MAX_LIFT_HEIGHT);
     pros::delay(500);
 
     // Drive back, drive to side alliance mogo
-    profiler->setTarget(-8_in);
-    profiler->waitUntilSettled();
+    profiler->setTarget(-8_in, true);
     turnToAngle(0_deg);
     liftController->setTarget(0);
     profiler->setTarget((2_tile)+(2_in));
@@ -263,33 +190,26 @@ void Auton::skills(){
 
     // Drive to center mogo, push to end
     liftController->setTarget(100);
-    profiler->setTarget((-0.7_tile)+(2_in));
-    profiler->waitUntilSettled();
+    profiler->setTarget((-0.7_tile)+(2_in), true);
     turnToAngle(45_deg);
     mogo.toggle();
-    profiler->setTarget(-1.8_tile);
-    profiler->waitUntilSettled();
-    profiler->setTarget(-6.5_ft);
-    profiler->waitUntilSettled();
+    profiler->setTarget(-1.8_tile, true);
+    profiler->setTarget(-6.5_ft, true);
 
     // score red side mogo
     liftController->setTarget(MAX_LIFT_HEIGHT);
-    profiler->setTarget(Skills::path4);
-    profiler->waitUntilSettled();
+    profiler->setTarget(Skills::path4, true);
     claw.set(false);
-    profiler->setTarget(-5.75_in);
-    profiler->waitUntilSettled();
+    profiler->setTarget(-5.75_in, true);
     liftController->setTarget(0);
     turnToAngle(0_deg);
 
     // grab side blue mogo
-    profiler->setTarget((-4.5_ft));
-    profiler->waitUntilSettled();
+    profiler->setTarget((-4.5_ft), true);
     pros::delay(300);
     mogoClamp.set(true);
     pros::delay(100);
     mogo.set(true);
-
 
     // grab right side yellow
     turnToAngle(65_deg);
@@ -301,7 +221,6 @@ void Auton::skills(){
     claw.set(true);
     
     // score right side yellow
-    //profiler->setTarget(148_cm);
     profiler->setTarget(Skills::path5);
     pros::delay(100);
     liftController->setTarget(MAX_LIFT_HEIGHT);
@@ -310,8 +229,7 @@ void Auton::skills(){
     pros::delay(300);
 
     // score dropped blue mogo
-    profiler->setTarget(-6_in);
-    profiler->waitUntilSettled();
+    profiler->setTarget(-6_in, true);
     liftController->setTarget(0);
     turnToAngle(0_deg);
     profiler->setTarget(1.2_tile);
@@ -323,17 +241,14 @@ void Auton::skills(){
     liftController->setTarget(MAX_LIFT_HEIGHT);
     pros::delay(1000);
     turnToAngle(90_deg);
-    profiler->setTarget(6_in);
-    profiler->waitUntilSettled();
+    profiler->setTarget(6_in, true);
     claw.set(false);
     
     // grab other blue alliance
-    profiler->setTarget(-6_in);
-    profiler->waitUntilSettled();
+    profiler->setTarget(-6_in, true);
     liftController->setTarget(0);
     turnToAngle(-180_deg);
-    profiler->setTarget(1_tile);
-    profiler->waitUntilSettled();
+    profiler->setTarget(1_tile, true);
     pros::delay(100);
     claw.set(true);
 }

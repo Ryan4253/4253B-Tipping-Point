@@ -14,6 +14,10 @@ void curvatureDrive(double moveC, double turnC, bool quickTurn){
     chassis->getModel()->tank(leftSpeed, rightSpeed);
 }
 
+double driveCurve(double power){
+    return Math::signum(power) * pow(abs(power), 0.76);
+}
+
 void moveTime(std::pair<double, double> speed, QTime time) {
     (chassis->getModel())->tank(speed.first, speed.second);
     pros::delay(time.convert(millisecond));

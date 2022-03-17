@@ -62,5 +62,9 @@ std::pair<double, double> Math::quadraticFormula(double a, double b, double c){
     }
 }
 
+int Math::signum(double value){
+    return (value > 0) - (value < 0);
+}
+
 }
 

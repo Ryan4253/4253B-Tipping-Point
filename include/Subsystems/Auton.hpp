@@ -1,59 +1,13 @@
 #pragma once
 #include "main.h"
 
-using AutonFunction = std::function<void()>;
+using AutonRoutine = std::function<void()>;
 
 /**
- * @brief This namespaces contains our auton selector implemented
- *        using the V5 controller, as well as all our auton routes
+ * @brief The Auton namespace stores all of our autonomous routines
  * 
  */
 namespace Auton {
-    extern std::map<std::string, AutonFunction> auton;
-    extern std::map<int, std::string> name;
-    extern std::string currentName;
-    extern int index;
-
-    /**
-     * @brief Adds a new autonomous routine to our selector
-     * 
-     * @param iAutonomous the autonomous function
-     * @param iName name of the autonomous
-     */
-    void add(std::function<void()> iAutonomous, std::string iName);
-
-    /**
-     * @brief switched selected auton to the next option
-     * 
-     */
-    void switchAuton();
-
-    /**
-     * @brief sets the routine to the current autonomous
-     * 
-     */
-    void select();
-
-    /**
-     * @brief executes the selected autonomous
-     * 
-     */
-    void execute();
-
-    /**
-     * @brief Get the name of the currently candidate autonomous
-     * 
-     * @return std::string the name of the autonomous that will be set of select() is called
-     */
-    std::string getCandidateName();
-
-    /**
-     * @brief Get the name of the currently selected autonomous
-     * 
-     * @return std::string the name of the autonomous that will be run if execute() is called
-     */
-    std::string getSelectedName();
-
     /**
      * @brief initializes robot for autonomous
      * 
@@ -90,5 +44,9 @@ namespace Auton {
      */
     void awp();
 
+    /**
+     * @brief LRT Autonomous routine. Route stolen from Chenry (980S)
+     * 
+     */
     void chenryLRTAuton();
 };

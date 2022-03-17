@@ -25,8 +25,6 @@ Pneumatics mogoClamp('F');
 Pneumatics claw('D');
 Pneumatics wings('H'); 
 
-Pneumatics needle('A');
-
 // MOTION PROFILE CONSTANTS
 ProfileConstraint constraint({4.8_ftps, 17.5_ftps2, 17.5_ftps2, 25_ftps3});
 ProfileConstraint trapLimit({4.8_ftps, 9.5_ftps2, 4.8_ftps2, 25_ftps3});
@@ -67,10 +65,6 @@ std::shared_ptr<IterativePosPIDController> visionPID = std::make_shared<Iterativ
 std::shared_ptr<IterativePosPIDController> movePID = std::make_shared<IterativePosPIDController>(0.1, 0.0, 0.002, 0, TimeUtilFactory::withSettledUtilParams(2, 2, 100_ms));
 std::shared_ptr<IterativePosPIDController> headingPID = std::make_shared<IterativePosPIDController>(0.118, 0, 0, 0, TimeUtilFactory::createDefault());
 
-/**
- * @brief Create a Blank Background on the brain screen
- * 
- */
 void createBlankBackground(){
     lv_obj_t *background;
     lv_style_t backgroundStyle;
@@ -85,3 +79,4 @@ void createBlankBackground(){
     lv_obj_set_size(background, LVGL_SCREEN_WIDTH, LVGL_SCREEN_HEIGHT);
     lv_obj_align(background, NULL, LV_ALIGN_CENTER, 0, 0);
 }
+

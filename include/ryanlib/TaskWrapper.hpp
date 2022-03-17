@@ -7,7 +7,8 @@ namespace ryan{
 /*
  * A utility class that wraps a task trampoline. To use, simply inherit your class from TaskWrapper
  * and override the `loop` method. To start the task, the `startTask` method must be called, either
- * from the constructor or from outside the class.
+ * from the constructor or from outside the class. Credit for initial idea / implementation goes to 
+ * Theo Lemay (7842F)
  * 
  */
 
